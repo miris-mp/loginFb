@@ -16,9 +16,17 @@ void main() {
 class MyApp extends StatelessWidget {
  @override
   Widget build(BuildContext context) {
+    var scaffold = Scaffold(
+        backgroundColor: Colors.yellow[50],
+        appBar: AppBar(
+          title: Text("Flutter Login"),
+          backgroundColor: Colors.teal ,
+          ),
+        body: Center(child:_buildBody()),
+      );
     return MaterialApp(
       title: "Facebook Login",
-      home: _buildBody()
+      home: scaffold,
     );
   }
 
