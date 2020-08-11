@@ -9,12 +9,37 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
   ],
 );
 
-void main() {
+  void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
- @override
+class MyApp extends StatefulWidget {
+  @override
+  State createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+GoogleSignInAccount _currentUser;
+//String _contactText;
+
+@override
+void initState() {
+  super.initState();
+
+  _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+    setState(() => 
+    _currentUser = account
+    );
+    /*
+  if (_currentUser != null) {
+        _handleGetContact();
+      }
+      */
+    });
+    _googleSignIn.signInSilently();
+  }
+
+@override
   Widget build(BuildContext context) {
     var scaffold = Scaffold(
         backgroundColor: Colors.yellow[50],
@@ -39,16 +64,38 @@ class MyApp extends StatelessWidget {
     }
   }
 
+   Future<void> _handleSignOut() => _googleSignIn.disconnect();
+
   Widget _buildBody() {
-    return Column(
-      mainAxisAlignment:MainAxisAlignment.spaceAround,
+     if (_currentUser != null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          const Text("You are not currently signed in."),
+          ListTile(
+            leading: GoogleUserCircleAvatar(
+              identity: _currentUser,
+            ),
+            title: Text(_currentUser.displayName ?? ''),
+            subtitle: Text(_currentUser.email ?? ''),
+          ),
+          const Text('Signed in successfully.'),
+          RaisedButton(
+            child: const Text('SIGN OUT'),
+            onPressed: _handleSignOut,
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          const Text('You are not currently signed in.'),
           RaisedButton(
             child: const Text('SIGN IN'),
             onPressed: _handleSignIn,
           ),
         ],
-    );
-  } 
+      );
+    }
+}
 }
