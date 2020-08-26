@@ -29,6 +29,11 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+      setState(() {
+        _currentUser = account;
+      });
+    });
     _googleSignIn.signInSilently();
   }
 
@@ -58,7 +63,7 @@ class MyAppState extends State<MyApp> {
           RaisedButton(
             child: const Text('SIGN OUT'),
             onPressed: _handleSignOut,
-          ),
+          )
         ],
       );
     } else {
